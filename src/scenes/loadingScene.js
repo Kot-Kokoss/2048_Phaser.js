@@ -7,7 +7,9 @@ export default class LoadingScene extends Phaser.Scene {
 
   preload() {}
 
-  create() {}
+  create() {
+    this.scene.start('gameScene');
+  }
 
   update() {}
 }
