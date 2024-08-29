@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Utils } from 'phaser';
 
 const TILE_SIZE = 78;
 const GRID_SIZE = 4;
@@ -29,18 +29,19 @@ export default class GameScene extends Phaser.Scene {
     const scoreBg = this.add.container(0, 0);
     scoreBg.add(graphicsScore);
 
-    const scoreHeading = this.add.text(-60, 0, 'СЧЁТ:', {
+    const scoreHeading = this.add.text(-90, 0, 'СЧЁТ:', {
       font: '28px sans-serif',
       color: '#100c0a',
     });
     scoreHeading.setOrigin(0, 0.5);
-    this.scoreText = this.add.text(30, -15, this.score, {
+    this.scoreText = this.add.text(0, -15, this.score, {
       font: '28px sans-serif',
       color: '#100c0a',
     });
     scoreContainer.add([scoreBg, scoreHeading, this.scoreText]);
 
     this.initBoard();
+
     this.boardContainer = this.add.container(145, 135);
     const boardSize = TILE_SIZE * GRID_SIZE + GAP * (GRID_SIZE + 1);
     const graphicsBorder = this.add.graphics();
@@ -48,6 +49,9 @@ export default class GameScene extends Phaser.Scene {
     graphicsBorder.fillRoundedRect(-125, -35, boardSize, boardSize, 5);
     graphicsBorder.lineStyle(5, 0xa0a0a0, 1);
     graphicsBorder.strokeRoundedRect(-125, -35, boardSize, boardSize, 5);
+
+    this.createRandom2or4();
+    this.updateBoard();
 
     const borderBg = this.add.container(0, 0);
     borderBg.add(graphicsBorder);
@@ -76,10 +80,33 @@ export default class GameScene extends Phaser.Scene {
     for (let i = 0; i < GRID_SIZE; i++) {
       this.board[i] = [];
       for (let j = 0; j < GRID_SIZE; j++) {
-        this.board[i][j] = null;
+        this.board[i][j] = 0;
       }
     }
   }
+
+  createRandom2or4() {
+    const emptyTiles = [];
+    for (let i = 0; i < GRID_SIZE; i++) {
+      for (let j = 0; j < GRID_SIZE; j++) {
+        if (this.board[i][j] === 0) {
+          emptyTiles.push({
+            x: i,
+            y: j,
+          });
+        }
+      }
+    }
+
+    const chosenTile = Phaser.Utils.Array.GetRandom(emptyTiles);
+    this.board[chosenTile.x][chosenTile.y] = Phaser.Math.Between(1, 2) * 2;
+  }
+
+  updateBoard() {
+    console.log(this.board);
+  }
+
+  updateScore() {}
 
   update() {}
 }
